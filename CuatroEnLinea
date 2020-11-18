@@ -1,0 +1,414 @@
+package juego;
+
+/**
+ * Juego Cuatro en Lí­nea
+ * 
+ * Reglas:
+ * ---------------------------
+ * Comienza el juego las fichas negras.
+ * Solo se puede tirar una ficha por turno de cada jugador.
+ * 
+ * Se considera ganador al jugador que complete en una linea 
+ * contigua vertical,horizontal o diagonal 4 fichas del 
+ * mismo color.
+ * 
+ *Se considerara empatada una partida en la cual se haya 
+ *completado el tablero sin que se haya formado un Cuatro en Linea.
+ * 
+ * 
+ * 
+ * 		...
+ *
+ */
+public class CuatroEnLinea {
+
+
+	//Atributos
+	private Casillero[][] tablero;
+	private String jugador1 ="";
+	private String jugador2 ="";
+	private String ganador = "";
+	private int turno = 0;
+
+	//Constructor
+	//Constructor
+	/**
+	 * pre : 'filas' y 'columnas' son mayores o iguales a 4.
+	 * post: empieza el juego entre el jugador que tiene fichas rojas, identificado como 
+	 * 		 'jugadorRojo' y el jugador que tiene fichas amarillas, identificado como
+	 * 		 'jugadorAmarillo'. 
+	 * 		 Todo el tablero está vacío.
+	 * 
+	 * @param filas : cantidad de filas que tiene el tablero.
+	 * @param columnas : cantidad de columnas que tiene el tablero.
+	 * @param jugadorNegro : nombre del jugador con fichas rojas.
+	 * @param jugadorMagenta : nombre del jugador con fichas amarillas.
+	 */
+	public CuatroEnLinea(int filas, int columnas, String jugadorNegro, String jugadorMagenta) {
+
+		validarTablero(filas,columnas,jugadorNegro,jugadorMagenta);
+
+		crearTablero(filas,columnas,jugadorNegro,jugadorMagenta);
+	}
+	
+	//Metodos publicos
+
+	//Metodos publicos
+	/**
+	 * post: devuelve la cantidad máxima de fichas que se pueden apilar en el tablero.
+	 */
+	public int contarFilas() {
+
+		return tablero.length;
+	}
+	
+	
+
+	/**
+	 * post: devuelve la cantidad máxima de fichas que se pueden alinear en el tablero.
+	 */
+	public int contarColumnas() {
+
+		return tablero[0].length;
+	}
+	
+
+	/**
+	 * pre : fila está en el intervalo [1, contarFilas()],
+	 * 		 columnas está en el intervalo [1, contarColumnas()].
+	 * post: indica qué ocupa el casillero en la posición dada por fila y columna.
+	 * 
+	 * @param fila
+	 * @param columna
+	 */
+	public Casillero obtenerCasillero(int fila, int columna) {
+		validarCasillero(fila,columna);
+		return tablero[fila-1][columna-1];
+	}
+	
+
+	/**
+	 * pre : el juego no terminó, columna está en el intervalo [1, contarColumnas()]
+	 * 		 y aún queda un Casillero.VACIO en la columna indicada. 
+	 * post: deja caer una ficha en la columna indicada.
+	 * 
+	 * @param columna
+	 */
+	public void soltarFichaEnColumna(int columna) {
+		validarMovimiento(columna);
+		if(!hayGanador() || ! termino()){
+			if(tablero[0][columna-1] == Casillero.VACIO){
+				int fila = tablero.length-1;
+
+				while(tablero[fila][columna-1] != Casillero.VACIO){
+					fila--;
+				}
+				if(turno % 2 == 0){
+					tablero[fila][columna-1] = Casillero.NEGRO;
+				}
+				else{
+					tablero[fila][columna-1] = Casillero.MAGENTA;
+				}
+				turno++;
+			}
+		}
+	}
+	
+
+	/**
+	 * post: indica si el juego terminó porque uno de los jugadores
+	 * 		 ganó o no existen casilleros vacíos.
+	 */
+	public boolean termino() {
+
+		if(hayGanador())return true;
+
+		for(int i = 0; i < contarFilas();i++){
+			for(int j = 0; j < contarColumnas();j++){
+				if(tablero[i][j] == Casillero.VACIO){
+					return false;}
+			}
+		}
+		return true;
+	}
+	
+
+	/**
+	 * post: indica si el juego terminó y tiene un ganador.
+	 */
+	public boolean hayGanador() {
+
+		return ganoHorizontal() || ganoVertical()|| ganoDiagonalAscendente() || ganoDiagonalDescendente();
+	}
+	
+
+	/**
+	 * pre : el juego terminó.
+	 * post: devuelve el nombre del jugador que ganó el juego.
+	 */
+	public String obtenerGanador() {
+		if(hayGanador()){
+			return this.ganador;
+		}		
+		return null;
+	}
+	
+	//Metodos privados
+
+	//Metodos privados
+	/**
+	 * pre: "posicion" es un numero entero. 
+	 * post: Valida la posicion dada por "posicion" si es mayor o igual a 4.
+	 * @param posicion
+	 * @return
+	 */
+	private boolean esValido(int posicion){
+		boolean validar = posicion >= 4;
+		return validar ;
+	}	
+
+	/**
+	 * pre: El tablero ya esta creado, tanto "fila" como "columna" son numeros enteros.
+	 * post: Valida si el casillero dado existe en el tablero creado.
+	 * @param fila
+	 * @param columna
+	 */
+	private void validarCasillero(int fila,int columna){
+		if(fila <= 0 || fila > contarFilas()){
+			throw new Error("El numero de fila" + fila +"no es valido");
+		}else if(columna <= 0 || columna > contarColumnas()){
+			throw new Error("El numero de fila" + columna +"no es valido");
+		}
+	}
+	
+
+	/**
+	 * pre: Tanto "filas" como "columnas" son numeros enteros y "jugadorRojo" como "jugadorAmarillo"
+	 * son objetos de tipo String.
+	 * post: Valida si el tablero puede ser creado con los parametros dados antes de inicializarlo.
+	 * @param filas
+	 * @param columnas
+	 * @param jugadorRojo
+	 * @param jugadorAmarillo
+	 */
+	private void validarTablero(int filas, int columnas, String jugadorRojo, String jugadorAmarillo){
+		if (!esValido(filas) && !esValido(columnas)){
+			throw new Error("Dimensiones del tablero no permitidas");
+		}else if(!esValido(filas)){
+			throw new Error("Cantidad de filas no permitidas: " + filas);
+		}else if(!esValido(columnas)){
+			throw new Error("Cantidad de columnas no permitidas: " + columnas);
+		}
+
+		String nombre1 = new String(jugadorRojo);
+		String nombre2 = new String("");
+		String nombre3 = new String(jugadorAmarillo);
+		String nombre4 = new String("");
+
+		if (nombre1.equals(nombre2) || nombre3.equals(nombre4)){
+			throw new Error("Es necesario introducir un nombre");	
+		}
+	}
+	
+
+	/**
+	 * pre: Tanto "filas" como "columnas" son numeros enteros mayores o iguales a 4, y "jugadorRojo" 
+	 * como "jugadorAmarillo" son objetos de tipo String.
+	 * post: Crea el tablero del juego.
+	 * @param filas
+	 * @param columnas
+	 * @param jugadorRojo
+	 * @param jugadorAmarillo
+	 */
+	private void crearTablero(int filas,int columnas,String jugadorRojo,String jugadorAmarillo){
+		tablero = new Casillero[filas][columnas];
+		jugador1 = jugadorRojo;
+		jugador2 = jugadorAmarillo;
+
+		for(int i = 0; i < filas; i++){
+			for(int j = 0; j < columnas; j++){
+				tablero[i][j] = Casillero.VACIO;
+			}
+		}
+	}
+	
+
+	/**
+	 * pre: columna es un numero entero.
+	 * post: Valida si el movimiento dado puede realizarse o lanza error si no se puede realizar.
+	 * @param columna
+	 */
+	private void validarMovimiento(int columna){
+		if(termino()){
+			throw new Error("El juego ya finalizo");
+		}else if(columna <= 0 || columna > tablero[0].length){
+			throw new Error("La columna no corresponde al tamaño asignado al crear el juego");
+		}else if(tablero[0][columna-1] != Casillero.VACIO){
+			throw new Error("La columna ya tiene el maximo de fichas permitidas por columna");
+		}
+	}
+	
+
+	/**
+	 * post: devuelve Verdadero tras analizar si de manera horizontal se encuentran 4 fichas de un mismo 
+	 * color seguidas,iterando en las posiciones del tableroo, o falso si no sucede lo anterior.. 
+	 * @return
+	 */
+	private boolean ganoHorizontal(){
+
+		boolean ganador = false;
+
+		for(int i = 0; i < tablero.length; i++){
+			int sumaFichasRojas = 0;
+			int sumaFichasMagentas = 0;
+			for(int f = 0; f < tablero[0].length;f++){
+				if(tablero[i][f] == Casillero.NEGRO){
+					sumaFichasRojas++;
+					sumaFichasMagentas = 0;
+					if(sumaFichasRojas == 4){
+						ganador = true;
+						this.ganador= jugador1;
+						return ganador;}
+				}else if(tablero[i][f] == Casillero.MAGENTA){
+					sumaFichasRojas = 0;
+					sumaFichasMagentas++;
+					if(sumaFichasMagentas == 4){
+						ganador = true;
+						this.ganador =jugador2;
+						return ganador;}
+				}
+			}
+		}
+		return ganador;
+	}
+	
+
+	/**
+	 * post: devuelve Verdadero tras analizar si de manera vertical se encuentran 4 fichas de un mismo 
+	 * color seguidas,iterando en las posiciones del tablero, o falso si no sucede lo anterior. 
+	 * @return
+	 */
+	private boolean ganoVertical(){
+
+		boolean ganador = false;
+
+		for(int i = 0; i < tablero[0].length; i++){
+			int sumaFichasNegras = 0;
+			int sumaFichasMagentas = 0;
+
+			for(int f = 0; f < tablero.length;f++){
+				if(tablero[f][i] == Casillero.NEGRO){
+					sumaFichasNegras++;
+					sumaFichasMagentas = 0;
+					if(sumaFichasNegras >= 4){
+						ganador = true;
+						this.ganador = jugador1;
+						return ganador;}
+				}else if(tablero[f][i] == Casillero.MAGENTA){
+					sumaFichasNegras = 0;
+					sumaFichasMagentas++;
+					if(sumaFichasMagentas == 4){
+						ganador = true;
+						this.ganador = jugador2;
+						return ganador;}
+				}
+			}
+		}
+		return ganador;
+	}
+	
+
+	/**
+	 * post: devuelve verdadero tras analizar si en una diagonal ascendente se encuentrar 4 fichas de un
+	 * mismo color.
+	 * @return
+	 */
+	private boolean ganoDiagonalAscendente(){
+
+		boolean ganador = false;
+
+		for(int fila = 0; fila < contarFilas(); fila++){
+			for(int columna = 0; columna < contarColumnas(); columna++){
+				if(tablero[fila][columna] == Casillero.NEGRO){
+					if(fila != (contarFilas() - 1) && columna > 0){
+						if(tablero[fila + 1][columna - 1] == Casillero.NEGRO){
+							if(fila != (contarFilas() - 2) && columna > 1){
+								if(tablero[fila + 2][columna - 2] == Casillero.NEGRO){
+									if(fila != (contarFilas() - 3) && columna > 2){
+										if(tablero[fila + 3][columna - 3] == Casillero.NEGRO){
+											ganador = true;
+											this.ganador = jugador1;
+											return ganador;}
+									}
+								}
+							}
+						}
+					}
+				}else if(tablero[fila][columna] == Casillero.MAGENTA){
+					if(fila != (contarFilas() - 1) && columna > 0){
+						if(tablero[fila + 1][columna - 1] == Casillero.MAGENTA){
+							if(fila != (contarFilas() - 2) && columna > 1){
+								if(tablero[fila + 2][columna - 2] == Casillero.MAGENTA){
+									if(fila != (contarFilas() - 3) && columna > 2){
+										if(tablero[fila + 3][columna - 3] == Casillero.MAGENTA){
+											ganador = true;
+											this.ganador = jugador2;
+											return ganador;}		
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return ganador;
+	}
+	
+
+	/**
+	 * post: devuelve verdadero tras analizar si en una diagonal descendente se encuentrar 4 fichas de un
+	 * mismo color.
+	 * @return
+	 */
+	private boolean ganoDiagonalDescendente(){
+
+		boolean ganador = false;
+
+		for(int fila = 0; fila < contarFilas(); fila++){
+			for(int columna = 0; columna < contarColumnas(); columna++){
+				if(tablero[fila][columna] == Casillero.MAGENTA){
+					if(fila != (contarFilas() - 1) && columna != (contarColumnas() - 1)){
+						if(tablero[fila + 1][columna + 1] == Casillero.MAGENTA){
+							if(fila != (contarFilas() - 2) && columna != (contarColumnas() - 2)){
+								if(tablero[fila + 2][columna + 2] == Casillero.MAGENTA){
+									if(fila != (contarFilas() - 3) && columna != (contarColumnas() - 3)){
+										if(tablero[fila + 3][columna + 3] == Casillero.MAGENTA){
+											ganador = true;
+											this.ganador = jugador2;
+											return ganador;}
+									}
+								}
+							}
+						}
+					}
+				}else if(tablero[fila][columna] == Casillero.NEGRO){
+					if(fila != (contarFilas() - 1) && columna != (contarColumnas() - 1)){
+						if(tablero[fila + 1][columna + 1] == Casillero.NEGRO){
+							if(fila != (contarFilas() - 2) && columna != (contarColumnas() - 2)){
+								if(tablero[fila + 2][columna + 2] == Casillero.NEGRO){
+									if(fila != (contarFilas() - 3) && columna != (contarColumnas() - 3)){
+										if(tablero[fila + 3][columna + 3] == Casillero.NEGRO){
+											ganador = true;
+											this.ganador = jugador1;
+											return ganador;}
+									}
+								}
+							}
+						}
+					}
+				}		
+			}
+		}
+		return ganador;
+	}
