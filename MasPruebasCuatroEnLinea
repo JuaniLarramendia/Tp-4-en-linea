@@ -1,0 +1,37 @@
+package test;
+
+import org.junit.Test;
+import juego.CuatroEnLinea;
+
+public class MasPruebasCuatroEnLinea {
+
+	private CuatroEnLinea juego;
+	
+	@Test(expected = Error.class)
+    public void crearTableroSinNombreDeJugadorRojoLanzaEror(){
+    	new CuatroEnLinea(5,3,"","Juan");
+    }
+    
+    @Test(expected = Error.class)
+    public void crearTableroSinNombreDeJugadorAmarilloLanzaEror(){
+    	new CuatroEnLinea(5,3,"Roman","");
+    }
+    
+    @Test (expected = Error.class)
+    public void soltarFichaEnColumnaDevuelveErrorSiElJuegoTermino(){
+    	
+    	juego = new CuatroEnLinea(4, 6, "Julio", "Laura");
+    	
+    	fueronSoltadasFichasEnColumnas(1,1,2,2,3,3,4);
+    	
+    	juego.soltarFichaEnColumna(4);
+    } 
+    
+    private void fueronSoltadasFichasEnColumnas(int... columnas) {
+
+    	for (int columna : columnas) {
+    		juego.soltarFichaEnColumna(columna);
+    	}
+    }
+    
+}
