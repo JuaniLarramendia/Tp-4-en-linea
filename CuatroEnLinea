@@ -1,5 +1,7 @@
 package juego;
 
+package juego;
+
 /**
  * Juego Cuatro en Lí­nea
  * 
@@ -12,16 +14,12 @@ package juego;
  * contigua vertical,horizontal o diagonal 4 fichas del 
  * mismo color.
  * 
- *Se considerara empatada una partida en la cual se haya 
- *completado el tablero sin que se haya formado un Cuatro en Linea.
- * 
- * 
- * 
+ * Se considerara empatada una partida en la cual se haya 
+ * completado el tablero sin que se haya formado un Cuatro en Linea.
  * 		...
  *
  */
 public class CuatroEnLinea {
-
 
 	//Atributos
 	private Casillero[][] tablero;
@@ -30,7 +28,6 @@ public class CuatroEnLinea {
 	private String ganador = "";
 	private int turno = 0;
 
-	//Constructor
 	//Constructor
 	/**
 	 * pre : 'filas' y 'columnas' son mayores o iguales a 4.
@@ -41,18 +38,16 @@ public class CuatroEnLinea {
 	 * 
 	 * @param filas : cantidad de filas que tiene el tablero.
 	 * @param columnas : cantidad de columnas que tiene el tablero.
-	 * @param jugadorNegro : nombre del jugador con fichas rojas.
-	 * @param jugadorMagenta : nombre del jugador con fichas amarillas.
+	 * @param jugadorRojo : nombre del jugador con fichas rojas.
+	 * @param jugadorAmarillo : nombre del jugador con fichas amarillas.
 	 */
-	public CuatroEnLinea(int filas, int columnas, String jugadorNegro, String jugadorMagenta) {
+	public CuatroEnLinea(int filas, int columnas, String jugadorRojo, String jugadorAmarillo) {
 
-		validarTablero(filas,columnas,jugadorNegro,jugadorMagenta);
+		validarTablero(filas,columnas,jugadorRojo,jugadorAmarillo);
 
-		crearTablero(filas,columnas,jugadorNegro,jugadorMagenta);
+		crearTablero(filas,columnas,jugadorRojo,jugadorAmarillo);
 	}
 	
-	//Metodos publicos
-
 	//Metodos publicos
 	/**
 	 * post: devuelve la cantidad máxima de fichas que se pueden apilar en el tablero.
@@ -62,8 +57,6 @@ public class CuatroEnLinea {
 		return tablero.length;
 	}
 	
-	
-
 	/**
 	 * post: devuelve la cantidad máxima de fichas que se pueden alinear en el tablero.
 	 */
@@ -72,7 +65,6 @@ public class CuatroEnLinea {
 		return tablero[0].length;
 	}
 	
-
 	/**
 	 * pre : fila está en el intervalo [1, contarFilas()],
 	 * 		 columnas está en el intervalo [1, contarColumnas()].
@@ -86,7 +78,6 @@ public class CuatroEnLinea {
 		return tablero[fila-1][columna-1];
 	}
 	
-
 	/**
 	 * pre : el juego no terminó, columna está en el intervalo [1, contarColumnas()]
 	 * 		 y aún queda un Casillero.VACIO en la columna indicada. 
@@ -104,16 +95,15 @@ public class CuatroEnLinea {
 					fila--;
 				}
 				if(turno % 2 == 0){
-					tablero[fila][columna-1] = Casillero.NEGRO;
+					tablero[fila][columna-1] = Casillero.ROJO;
 				}
 				else{
-					tablero[fila][columna-1] = Casillero.MAGENTA;
+					tablero[fila][columna-1] = Casillero.AMARILLO;
 				}
 				turno++;
 			}
 		}
 	}
-	
 
 	/**
 	 * post: indica si el juego terminó porque uno de los jugadores
@@ -132,7 +122,6 @@ public class CuatroEnLinea {
 		return true;
 	}
 	
-
 	/**
 	 * post: indica si el juego terminó y tiene un ganador.
 	 */
@@ -141,7 +130,6 @@ public class CuatroEnLinea {
 		return ganoHorizontal() || ganoVertical()|| ganoDiagonalAscendente() || ganoDiagonalDescendente();
 	}
 	
-
 	/**
 	 * pre : el juego terminó.
 	 * post: devuelve el nombre del jugador que ganó el juego.
@@ -153,8 +141,6 @@ public class CuatroEnLinea {
 		return null;
 	}
 	
-	//Metodos privados
-
 	//Metodos privados
 	/**
 	 * pre: "posicion" es un numero entero. 
@@ -180,7 +166,6 @@ public class CuatroEnLinea {
 			throw new Error("El numero de fila" + columna +"no es valido");
 		}
 	}
-	
 
 	/**
 	 * pre: Tanto "filas" como "columnas" son numeros enteros y "jugadorRojo" como "jugadorAmarillo"
@@ -210,7 +195,6 @@ public class CuatroEnLinea {
 		}
 	}
 	
-
 	/**
 	 * pre: Tanto "filas" como "columnas" son numeros enteros mayores o iguales a 4, y "jugadorRojo" 
 	 * como "jugadorAmarillo" son objetos de tipo String.
@@ -232,7 +216,6 @@ public class CuatroEnLinea {
 		}
 	}
 	
-
 	/**
 	 * pre: columna es un numero entero.
 	 * post: Valida si el movimiento dado puede realizarse o lanza error si no se puede realizar.
@@ -248,7 +231,6 @@ public class CuatroEnLinea {
 		}
 	}
 	
-
 	/**
 	 * post: devuelve Verdadero tras analizar si de manera horizontal se encuentran 4 fichas de un mismo 
 	 * color seguidas,iterando en las posiciones del tableroo, o falso si no sucede lo anterior.. 
@@ -262,14 +244,14 @@ public class CuatroEnLinea {
 			int sumaFichasRojas = 0;
 			int sumaFichasMagentas = 0;
 			for(int f = 0; f < tablero[0].length;f++){
-				if(tablero[i][f] == Casillero.NEGRO){
+				if(tablero[i][f] == Casillero.ROJO){
 					sumaFichasRojas++;
 					sumaFichasMagentas = 0;
 					if(sumaFichasRojas == 4){
 						ganador = true;
 						this.ganador= jugador1;
 						return ganador;}
-				}else if(tablero[i][f] == Casillero.MAGENTA){
+				}else if(tablero[i][f] == Casillero.AMARILLO){
 					sumaFichasRojas = 0;
 					sumaFichasMagentas++;
 					if(sumaFichasMagentas == 4){
@@ -282,7 +264,6 @@ public class CuatroEnLinea {
 		return ganador;
 	}
 	
-
 	/**
 	 * post: devuelve Verdadero tras analizar si de manera vertical se encuentran 4 fichas de un mismo 
 	 * color seguidas,iterando en las posiciones del tablero, o falso si no sucede lo anterior. 
@@ -297,14 +278,14 @@ public class CuatroEnLinea {
 			int sumaFichasMagentas = 0;
 
 			for(int f = 0; f < tablero.length;f++){
-				if(tablero[f][i] == Casillero.NEGRO){
+				if(tablero[f][i] == Casillero.ROJO){
 					sumaFichasNegras++;
 					sumaFichasMagentas = 0;
 					if(sumaFichasNegras >= 4){
 						ganador = true;
 						this.ganador = jugador1;
 						return ganador;}
-				}else if(tablero[f][i] == Casillero.MAGENTA){
+				}else if(tablero[f][i] == Casillero.AMARILLO){
 					sumaFichasNegras = 0;
 					sumaFichasMagentas++;
 					if(sumaFichasMagentas == 4){
@@ -317,7 +298,6 @@ public class CuatroEnLinea {
 		return ganador;
 	}
 	
-
 	/**
 	 * post: devuelve verdadero tras analizar si en una diagonal ascendente se encuentrar 4 fichas de un
 	 * mismo color.
@@ -329,13 +309,13 @@ public class CuatroEnLinea {
 
 		for(int fila = 0; fila < contarFilas(); fila++){
 			for(int columna = 0; columna < contarColumnas(); columna++){
-				if(tablero[fila][columna] == Casillero.NEGRO){
+				if(tablero[fila][columna] == Casillero.ROJO){
 					if(fila != (contarFilas() - 1) && columna > 0){
-						if(tablero[fila + 1][columna - 1] == Casillero.NEGRO){
+						if(tablero[fila + 1][columna - 1] == Casillero.ROJO){
 							if(fila != (contarFilas() - 2) && columna > 1){
-								if(tablero[fila + 2][columna - 2] == Casillero.NEGRO){
+								if(tablero[fila + 2][columna - 2] == Casillero.ROJO){
 									if(fila != (contarFilas() - 3) && columna > 2){
-										if(tablero[fila + 3][columna - 3] == Casillero.NEGRO){
+										if(tablero[fila + 3][columna - 3] == Casillero.ROJO){
 											ganador = true;
 											this.ganador = jugador1;
 											return ganador;}
@@ -344,13 +324,13 @@ public class CuatroEnLinea {
 							}
 						}
 					}
-				}else if(tablero[fila][columna] == Casillero.MAGENTA){
+				}else if(tablero[fila][columna] == Casillero.AMARILLO){
 					if(fila != (contarFilas() - 1) && columna > 0){
-						if(tablero[fila + 1][columna - 1] == Casillero.MAGENTA){
+						if(tablero[fila + 1][columna - 1] == Casillero.AMARILLO){
 							if(fila != (contarFilas() - 2) && columna > 1){
-								if(tablero[fila + 2][columna - 2] == Casillero.MAGENTA){
+								if(tablero[fila + 2][columna - 2] == Casillero.AMARILLO){
 									if(fila != (contarFilas() - 3) && columna > 2){
-										if(tablero[fila + 3][columna - 3] == Casillero.MAGENTA){
+										if(tablero[fila + 3][columna - 3] == Casillero.AMARILLO){
 											ganador = true;
 											this.ganador = jugador2;
 											return ganador;}		
@@ -365,7 +345,6 @@ public class CuatroEnLinea {
 		return ganador;
 	}
 	
-
 	/**
 	 * post: devuelve verdadero tras analizar si en una diagonal descendente se encuentrar 4 fichas de un
 	 * mismo color.
@@ -377,13 +356,13 @@ public class CuatroEnLinea {
 
 		for(int fila = 0; fila < contarFilas(); fila++){
 			for(int columna = 0; columna < contarColumnas(); columna++){
-				if(tablero[fila][columna] == Casillero.MAGENTA){
+				if(tablero[fila][columna] == Casillero.AMARILLO){
 					if(fila != (contarFilas() - 1) && columna != (contarColumnas() - 1)){
-						if(tablero[fila + 1][columna + 1] == Casillero.MAGENTA){
+						if(tablero[fila + 1][columna + 1] == Casillero.AMARILLO){
 							if(fila != (contarFilas() - 2) && columna != (contarColumnas() - 2)){
-								if(tablero[fila + 2][columna + 2] == Casillero.MAGENTA){
+								if(tablero[fila + 2][columna + 2] == Casillero.AMARILLO){
 									if(fila != (contarFilas() - 3) && columna != (contarColumnas() - 3)){
-										if(tablero[fila + 3][columna + 3] == Casillero.MAGENTA){
+										if(tablero[fila + 3][columna + 3] == Casillero.AMARILLO){
 											ganador = true;
 											this.ganador = jugador2;
 											return ganador;}
@@ -392,13 +371,13 @@ public class CuatroEnLinea {
 							}
 						}
 					}
-				}else if(tablero[fila][columna] == Casillero.NEGRO){
+				}else if(tablero[fila][columna] == Casillero.ROJO){
 					if(fila != (contarFilas() - 1) && columna != (contarColumnas() - 1)){
-						if(tablero[fila + 1][columna + 1] == Casillero.NEGRO){
+						if(tablero[fila + 1][columna + 1] == Casillero.ROJO){
 							if(fila != (contarFilas() - 2) && columna != (contarColumnas() - 2)){
-								if(tablero[fila + 2][columna + 2] == Casillero.NEGRO){
+								if(tablero[fila + 2][columna + 2] == Casillero.ROJO){
 									if(fila != (contarFilas() - 3) && columna != (contarColumnas() - 3)){
-										if(tablero[fila + 3][columna + 3] == Casillero.NEGRO){
+										if(tablero[fila + 3][columna + 3] == Casillero.ROJO){
 											ganador = true;
 											this.ganador = jugador1;
 											return ganador;}
@@ -412,3 +391,4 @@ public class CuatroEnLinea {
 		}
 		return ganador;
 	}
+}
